@@ -4,6 +4,7 @@ from __future__ import absolute_import
 
 from zoomus import util
 from zoomus.components import base
+import json
 
 
 class MeetingComponent(base.BaseComponent):
@@ -70,3 +71,11 @@ class MeetingComponentV2(base.BaseComponent):
         return self.delete_request(
             "/meetings/{}".format(kwargs.get("id")), params=kwargs
         )
+
+    def end(self, **kwargs):
+        util.require_keys(kwargs, "id")
+        return self.put_request(
+            "/meetings/{}/status".format(kwargs.get("id")),
+            data=json.dumps({'action': 'end'}),
+            headers={"Authorization": "Bearer {}".format(self.config.get("token")),
+                     "content-type": "application/json"})
